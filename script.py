@@ -1,49 +1,53 @@
 from selenium import webdriver
-
 import platform
-system_platform = platform.system()
-
 import os
 from dotenv import load_dotenv
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+system_platform = platform.system()
 load_dotenv()
 
-USERNAME = os.getenv("NAME") + "." + os.getenv("REGISTRATION_NUMBER")
+USERNAME = os.getenv("FIRST_NAME") + "." + os.getenv("REGISTRATION_NUMBER")
 PASSWORD = os.getenv("PASSWORD")
 
-from selenium.webdriver.chrome.options import Options
+if not USERNAME or not PASSWORD:
+	raise ValueError("Please provide the required environment variables.\n"
+					 "Check README.md on GitHub: https://github.com/AwesomeSam9523/slcm-feedback-automator")
+
+
 chrome_options = Options()
 if system_platform == "Windows":
 	chrome_options.add_experimental_option("detach", True)
-	browser = webdriver.Chrome(options=chrome_options)
 if system_platform == "Darwin":
-	chrome_options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-	browser = webdriver.Chrome(options=chrome_options)
+	chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
-def login(loginPage = "https://mujslcm.jaipur.manipal.edu:122/Home/Index"):
-	browser.get(loginPage)
+browser = webdriver.Chrome(options=chrome_options)
+a = [browser]
+
+def login(login_page ="https://mujslcm.jaipur.manipal.edu:122/Home/Index"):
+	browser.get(login_page)
+	browser.implicitly_wait(5)
 
 	username_field = browser.find_element("name", "UserName")
 	password_field = browser.find_element("name", "Password")
 	username_field.send_keys(USERNAME)
 	password_field.send_keys(PASSWORD)
-
+	browser.implicitly_wait(3)
 	login_button = browser.find_element("id", "login_submitStudent")
 	login_button.click()
+	print('Logged in!')
 
-login()
 
-def listAllFeedbacks(feedbackPage= "https://mujslcm.jaipur.manipal.edu:122/Student/Survey/FeedbackList"):
-	browser.get(feedbackPage)
-	feedbacksFetch = browser.find_elements("class name", "btn-clean")
+def list_all_feedbacks(feedback_page="https://mujslcm.jaipur.manipal.edu:122/Student/Survey/FeedbackList"):
+	browser.get(feedback_page)
+	feedbacks_fetch = browser.find_elements("class name", "btn-clean")
 
-	feedbacks = [{"status": feedback.text, "link": feedback.get_attribute('href')} for feedback in feedbacksFetch]
-	
-	return(feedbacks)
+	return [{"status": feedback.text, "link": feedback.get_attribute('href')} for feedback in feedbacks_fetch]
 
-feedbacks = listAllFeedbacks()
-
-def fillFeedback(courseLink):
-	browser.get(courseLink)
+def fill_feedback(course_link):
+	browser.get(course_link)
 
 	no_buttons = browser.find_elements("xpath", "//input[@type='radio' and @class='yescheck']")
 	for button in no_buttons:
@@ -63,11 +67,13 @@ def fillFeedback(courseLink):
 
 	browser.get("https://mujslcm.jaipur.manipal.edu:122/Student/Survey/FeedbackList")
 
-feedbacks = listAllFeedbacks()
-
+login()
+feedbacks = list_all_feedbacks()
+print(feedbacks)
 for feedback in feedbacks:
-	if (feedback["status"] == "Pending"):
-		fillFeedback(feedback["link"])
+	print(a)
+	if feedback["status"] == "Pending":
+		fill_feedback(feedback["link"])
 		feedback["status"] = "Completed"
 	else:
 		continue
