@@ -26,7 +26,7 @@ if system_platform == "Darwin":
 browser = webdriver.Chrome(options=chrome_options)
 a = [browser]
 
-def login(login_page ="https://mujslcm.jaipur.manipal.edu:122/Home/Index"):
+def login(login_page ="https://mujslcm.jaipur.manipal.edu/Home/Index"):
 	browser.get(login_page)
 	browser.implicitly_wait(5)
 
@@ -40,7 +40,7 @@ def login(login_page ="https://mujslcm.jaipur.manipal.edu:122/Home/Index"):
 	print('Logged in!')
 
 
-def list_all_feedbacks(feedback_page="https://mujslcm.jaipur.manipal.edu:122/Student/Survey/FeedbackList"):
+def list_all_feedbacks(feedback_page="https://mujslcm.jaipur.manipal.edu/Student/Survey/FeedbackList"):
 	browser.get(feedback_page)
 	feedbacks_fetch = browser.find_elements("class name", "btn-clean")
 
@@ -65,7 +65,7 @@ def fill_feedback(course_link):
 	submit_button = browser.find_element("xpath", "//button[@id='btnSubmit']")
 	submit_button.click()
 
-	browser.get("https://mujslcm.jaipur.manipal.edu:122/Student/Survey/FeedbackList")
+	browser.get("https://mujslcm.jaipur.manipal.edu/Student/Survey/FeedbackList")
 
 login()
 feedbacks = list_all_feedbacks()
