@@ -3,8 +3,8 @@ import platform
 import os
 from dotenv import load_dotenv
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 system_platform = platform.system()
 load_dotenv()
@@ -30,48 +30,45 @@ def login(login_page ="https://mujslcm.jaipur.manipal.edu/Home/Index"):
 	browser.get(login_page)
 	browser.implicitly_wait(5)
 
-	username_field = browser.find_element("name", "UserName")
-	password_field = browser.find_element("name", "Password")
+	username_field = browser.find_element(By.NAME, "UserName")
+	password_field = browser.find_element(By.NAME, "Password")
 	username_field.send_keys(USERNAME)
 	password_field.send_keys(PASSWORD)
 	browser.implicitly_wait(3)
-	login_button = browser.find_element("id", "login_submitStudent")
+	login_button = browser.find_element(By.ID, "login_submitStudent")
 	login_button.click()
 	print('Logged in!')
 
 
 def list_all_feedbacks(feedback_page="https://mujslcm.jaipur.manipal.edu/Student/Survey/FeedbackList"):
 	browser.get(feedback_page)
-	feedbacks_fetch = browser.find_elements("class name", "btn-clean")
-
+	feedbacks_fetch = browser.find_elements(By.CLASS_NAME, "btn-clean")
 	return [{"status": feedback.text, "link": feedback.get_attribute('href')} for feedback in feedbacks_fetch]
 
 def fill_feedback(course_link):
 	browser.get(course_link)
 
-	no_buttons = browser.find_elements("xpath", "//input[@type='radio' and @class='yescheck']")
+	no_buttons = browser.find_elements(By.XPATH, "//input[@type='radio' and @class='yescheck']")
 	for button in no_buttons:
 		button.click()
 	
-	from selenium.webdriver.support.ui import Select
-	dropdowns = browser.find_elements("xpath", "//select")
+	dropdowns = browser.find_elements(By.XPATH, "//select")
 	for dropdown in dropdowns:
 		select = Select(dropdown)
 		select.select_by_value("Y")
 	
-	text_box = browser.find_element("xpath", "//textarea")
+	text_box = browser.find_element(By.XPATH, "//textarea")
 	text_box.send_keys("Great Experience.")
 	
-	submit_button = browser.find_element("xpath", "//button[@id='btnSubmit']")
+	submit_button = browser.find_element(By.XPATH, "//button[@id='btnSubmit']")
 	submit_button.click()
 
 	browser.get("https://mujslcm.jaipur.manipal.edu/Student/Survey/FeedbackList")
 
 login()
 feedbacks = list_all_feedbacks()
-print(feedbacks)
 for feedback in feedbacks:
-	print(a)
+	assert a
 	if feedback["status"] == "Pending":
 		fill_feedback(feedback["link"])
 		feedback["status"] = "Completed"
