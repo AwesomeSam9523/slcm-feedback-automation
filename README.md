@@ -1,5 +1,5 @@
 # Semester-End Feedback Automation Script
-An automation script for filling out semester-end feedback on my college portal - [SLCM](https://mujslcm.jaipur.manipal.edu:122/) at [Manipal, Jaipur](https://jaipur.manipal.edu/). If you need help with a similar task for a different college, feel free to reach out to me!
+An automation script for filling out semester-end feedback on my college portal - [SLCM](https://mujslcm.jaipur.manipal.edu/) at [Manipal, Jaipur](https://jaipur.manipal.edu/). If you need help with a similar task for a different college, feel free to reach out to me!
 
 ## Steps to Run the Script on Your Computer
 Before you try to run this on your machine, ensure that you have Python and pip installed in your environment.
